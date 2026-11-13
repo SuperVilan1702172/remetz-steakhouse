@@ -24,7 +24,8 @@ layers = {
  'cheese':  ((455, 1003, 895, 1218), (lum > 120) & ~((X > 560) & (Y > 1192)) & ~((X > 610) & (Y > 1183)) & ((Y > 1040) | (G - B > 45))),
  'patty':   ((498, 1178, 865, 1312), ~((lum > 125) & (gr > 0.62) & (Y < 1218)) & ~((R - B > 105) & (Y > 1278)) & ~((R > 185) & (Y > 1278)) & ~((Y > 1296) & (X < 550))),
  'tomato':  ((430, 1278, 865, 1432), ((R - B > 105) | (R > 185)) & ((gr < 0.8) | (Y < 1395))),
- 'base':    ((455, 1398, 915, 1725), ~((gr < 0.58) & (lum < 125) & (X < 545)) & ((gr > 0.8) | ((Y > 1603) & (X > 490) & (Y < 1704 - (X - 480) * 0.03)))),
+ 'lettuce': ((455, 1398, 915, 1612), gr > 0.8),
+ 'bun-bottom': ((455, 1596, 915, 1725), (Y > 1603) & (X > 490) & (Y < 1704 - (X - 480) * 0.03) & (gr < 0.92)),
 }
 meta = {}
 for name, ((x0, y0, x1, y1), rule) in layers.items():
@@ -35,7 +36,7 @@ for name, ((x0, y0, x1, y1), rule) in layers.items():
     m = ndi.binary_opening(m, iterations=2)
     m = ndi.binary_closing(m, iterations=6)
     m = ndi.binary_fill_holes(m)
-    if name == 'base': m &= ~((gr < 0.62) & (B / np.maximum(G, 1) > 0.72) & (Y < 1624) & (X < 560))  # palm showing through the lettuce gap
+    if name in ('lettuce', 'bun-bottom'): m &= ~((gr < 0.62) & (B / np.maximum(G, 1) > 0.72) & (Y < 1624) & (X < 560))  # palm showing through the lettuce gap
     lab, n = ndi.label(m)
     if n:
         sizes = ndi.sum(m, lab, range(1, n+1))

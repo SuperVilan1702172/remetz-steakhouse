@@ -15,8 +15,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=Frank+Ruhl+Libre:wght@700&family=Rozha+One&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/burger/bun-top.webp">
-<link rel="preload" as="image" href="assets/burger/base.webp">
-<link rel="stylesheet" href="css/styles.css?v=4">
+<link rel="preload" as="image" href="assets/burger/bun-bottom.webp">
+<link rel="stylesheet" href="css/styles.css?v=6">
 </head>
 <body>
 
@@ -71,13 +71,14 @@
           <ellipse cx="300" cy="58" rx="289" ry="39" fill="none" stroke="#fff8ea" stroke-opacity=".55" stroke-width="1.500"/>
         </svg>
         <div class="stack" id="stack">
-          <img class="layer l-base"   src="assets/burger/base.webp"    alt="" width="822" height="586">
-          <img class="layer l-tomato" src="assets/burger/tomato.webp"  alt="" width="790" height="260" data-drop="0.0582">
-          <img class="layer l-patty"  src="assets/burger/patty.webp"   alt="" width="691" height="245" data-drop="0.0836">
-          <img class="layer l-cheese" src="assets/burger/cheese.webp"  alt="" width="822" height="370" data-drop="0.1527">
-          <img class="layer l-bacon"  src="assets/burger/bacon.webp"   alt="" width="773" height="254" data-drop="0.2300">
-          <img class="layer l-veg"    src="assets/burger/veg.webp"     alt="" width="852" height="202" data-drop="0.3027">
-          <img class="layer l-bun"    src="assets/burger/bun-top.webp" alt="" width="636" height="288" data-drop="0.3745">
+          <img class="layer l-base"    src="assets/burger/bun-bottom.webp" alt="" width="708" height="203">
+          <img class="layer l-lettuce" src="assets/burger/lettuce.webp" alt="" width="822" height="402" data-drop="0.040">
+          <img class="layer l-tomato"  src="assets/burger/tomato.webp"  alt="" width="790" height="260" data-drop="0.146">
+          <img class="layer l-patty"   src="assets/burger/patty.webp"   alt="" width="691" height="245" data-drop="0.231">
+          <img class="layer l-cheese"  src="assets/burger/cheese.webp"  alt="" width="822" height="370" data-drop="0.355">
+          <img class="layer l-bacon"   src="assets/burger/bacon.webp"   alt="" width="773" height="254" data-drop="0.414">
+          <img class="layer l-veg"     src="assets/burger/veg.webp"     alt="" width="852" height="202" data-drop="0.491">
+          <img class="layer l-bun"     src="assets/burger/bun-top.webp" alt="" width="636" height="288" data-drop="0.614">
         </div>
       </div>
 
@@ -91,12 +92,8 @@
       <div class="landing" id="landing">
         <h2>Served. Now come and&nbsp;eat&nbsp;it.</h2>
         <p>The Remetz burger, 220&nbsp;g of chuck and brisket off the coals. It does not travel well. You&nbsp;should.</p>
-        <form class="quick" id="quick" novalidate>
-          <label><span>Date</span><input type="date" name="date" required></label>
-          <label><span>Time</span><select name="time" data-times></select></label>
-          <label><span>Guests</span><select name="guests" data-guests></select></label>
-          <button class="btn" type="submit">Find a table</button>
-        </form>
+        <button class="btn btn-lg btn-hook" type="button" data-open-book>Make your reservation now!</button>
+        <p class="landing-note" id="heroNote"></p>
       </div>
     </div>
   </section>
@@ -117,7 +114,7 @@
 
   <!-- Menu -->
   <section class="menu wrap" id="menu">
-    <header class="sec-head">
+    <header class="sec-head rv">
       <h2>The menu is short on&nbsp;purpose.</h2>
       <p>One grill, one cook standing at it. Prices in shekels, service not included.</p>
     </header>
@@ -193,35 +190,24 @@
 
   <!-- Reserve -->
   <section class="reserve" id="reserve">
+    <img class="reserve-bg" src="assets/img/flame.webp" alt="" width="1300" height="1949" loading="lazy">
     <div class="wrap reserve-grid">
-      <div class="reserve-copy">
+      <div class="reserve-copy rv">
         <h2>Come hungry.</h2>
-        <p>Tables are held for fifteen minutes. Parties of nine or more, or the tomahawk for the whole table: call us on <a href="tel:+97235550142">03-555-0142</a>.</p>
+        <p>Pick a day and an hour. Tables are held for fifteen minutes. Parties of nine or more, or the tomahawk for the whole table: call us on <a href="tel:+97235550142">03-555-0142</a>.</p>
       </div>
-      <form class="book" id="book" novalidate>
-        <div class="row3">
-          <label><span>Date</span><input type="date" name="date" required></label>
-          <label><span>Time</span><select name="time" data-times></select></label>
-          <label><span>Guests</span><select name="guests" data-guests></select></label>
-        </div>
-        <label><span>Name</span><input type="text" name="name" autocomplete="name" required enterkeyhint="next"></label>
-        <label><span>Mobile</span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="05X-XXX-XXXX" enterkeyhint="next"></label>
-        <label><span>Anything we should know <small>(optional)</small></span><textarea name="notes" rows="2" enterkeyhint="done"></textarea></label>
-        <p class="form-error" id="bookError" role="alert" hidden></p>
-        <button class="btn btn-lg" type="submit">Reserve the table</button>
-      </form>
-      <div class="booked" id="booked" tabindex="-1" hidden>
-        <svg aria-hidden="true"><use href="#flame"/></svg>
-        <h3 id="bookedTitle"></h3>
-        <p id="bookedText"></p>
-        <button class="link" type="button" id="bookAgain">Change the booking</button>
+      <div class="board glass rv" id="board">
+        <div class="days" id="days" role="group" aria-label="Day"></div>
+        <div class="slots" id="slots" role="group" aria-label="Hour"></div>
+        <p class="board-note" id="boardNote" aria-live="polite"></p>
+        <button class="btn btn-lg btn-hook" type="button" data-open-book>Make your reservation now!</button>
       </div>
     </div>
   </section>
 
   <!-- Visit -->
   <section class="visit wrap" id="visit">
-    <div class="visit-copy">
+    <div class="visit-copy rv">
       <h2>Find the&nbsp;smoke.</h2>
       <address>
         Remetz<br>
@@ -234,12 +220,37 @@
         <a class="link" href="tel:+97235550142">03-555-0142</a>
       </p>
     </div>
-    <div class="map">
+    <div class="map rv">
       <iframe title="Map showing Remetz at Dizengoff Center, Tel Aviv" loading="lazy" referrerpolicy="no-referrer"
         src="https://www.openstreetmap.org/export/embed.html?bbox=34.7690%2C32.0722%2C34.7814%2C32.0786&amp;layer=mapnik&amp;marker=32.0754%2C34.7752"></iframe>
     </div>
   </section>
 </main>
+
+<dialog class="sheet glass" id="sheet" aria-labelledby="sheetTitle">
+  <i class="sheet-flash" aria-hidden="true"></i>
+  <div class="sheet-in">
+    <button class="sheet-x" type="button" aria-label="Close" data-close><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    <form class="book" id="book" novalidate>
+      <h3 id="sheetTitle">Your table</h3>
+      <p class="sheet-when"><span id="sheetWhen"></span> <button class="link" type="button" id="sheetChange">Change</button></p>
+      <fieldset class="guests">
+        <legend>How many people</legend>
+        <div class="guest-row" id="guestRow"></div>
+      </fieldset>
+      <label><span>Name on the reservation</span><input type="text" name="name" autocomplete="name" required enterkeyhint="next"></label>
+      <label><span>Phone number</span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="05X-XXX-XXXX" enterkeyhint="done"></label>
+      <p class="form-error" id="bookError" role="alert" hidden></p>
+      <button class="btn btn-lg btn-go" type="submit" id="go">See You Soon!</button>
+    </form>
+    <div class="booked" id="booked" tabindex="-1" hidden>
+      <svg aria-hidden="true"><use href="#flame"/></svg>
+      <h3 id="bookedTitle"></h3>
+      <p id="bookedText"></p>
+      <button class="btn" type="button" data-close>Done</button>
+    </div>
+  </div>
+</dialog>
 
 <footer class="foot">
   <div class="wrap foot-grid">
@@ -254,6 +265,6 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=4" defer></script>
+<script src="js/main.js?v=6" defer></script>
 </body>
 </html>

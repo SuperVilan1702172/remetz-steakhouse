@@ -75,7 +75,7 @@
     const range = hero.offsetHeight - innerHeight;
     const p = clamp(-hero.getBoundingClientRect().top / range);
     const q = clamp(p / 0.8); // the last fifth of the scroll is a hold with the form on screen
-    layers.forEach((l, i) => { const x = clamp((q - i * 0.06) / 0.5); l.style.setProperty('--t', (x * x).toFixed(4)); });
+    layers.forEach((l, i) => { const x = clamp((q - i * 0.05) / 0.5); l.style.setProperty('--t', (x * x).toFixed(4)); });
     const s = stage.style, panel = smooth(q, 0.82, 1);
     s.setProperty('--q', q.toFixed(4));
     s.setProperty('--pm', smooth(q, 0.3, 0.92).toFixed(4));
@@ -102,7 +102,20 @@
 
   /* ---------- one-shot reveals ---------- */
   const seen = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('seen'); seen.unobserve(e.target); } }), { threshold: 0.15 });
-  $$('.fire-sec, .room').forEach(el => seen.observe(el));
+  $$('.fire-sec, .room, .rv, .course').forEach(el => seen.observe(el));
+  $$('.dishes').forEach(ul => $$('li', ul).forEach((li, i) => li.style.setProperty('--i', i)));
+
+  /* ---------- floating layers lean toward the mouse, less as they land ---------- */
+  if (!reduced && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    layers.forEach((l, i) => l.style.setProperty('--dp', (i - 3) * 7));
+    let mx = 0, my = 0, tx = 0, ty = 0, drift = 0;
+    const ease = () => {
+      mx += (tx - mx) * 0.08; my += (ty - my) * 0.08;
+      stage.style.setProperty('--mx', mx.toFixed(3)); stage.style.setProperty('--my', my.toFixed(3));
+      drift = Math.abs(tx - mx) + Math.abs(ty - my) > 0.002 ? requestAnimationFrame(ease) : 0;
+    };
+    stage.addEventListener('pointermove', e => { tx = e.clientX / innerWidth * 2 - 1; ty = e.clientY / innerHeight * 2 - 1; if (!drift) drift = requestAnimationFrame(ease); });
+  }
 
   /* ---------- menu: hovering or focusing a dish shows its photo ---------- */
   $$('.course').forEach(course => {
@@ -111,47 +124,113 @@
     $$('.dishes li', course).forEach(li => li.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') show(li.dataset.img); }));
   });
 
-  /* ---------- booking ---------- */
+  /* ---------- booking: a board of free hours, then a sheet that grows out of the button ---------- */
   const pad = n => String(n).padStart(2, '0');
   const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-  const today = new Date(), tomorrow = new Date(Date.now() + 864e5);
-  $$('[data-times]').forEach(sel => { for (let m = 12 * 60; m <= 23 * 60; m += 30) sel.add(new Option(`${pad(m / 60 | 0)}:${pad(m % 60)}`)); sel.value = '20:00'; });
-  $$('[data-guests]').forEach(sel => { for (let g = 1; g <= 8; g++) sel.add(new Option(g)); sel.value = '2'; });
-  $$('input[type="date"]').forEach(d => { d.min = iso(today); d.value = iso(tomorrow); });
+  const fmt = (d, o) => d.toLocaleDateString('en-GB', o);
+  const HOURS = Array.from({ length: 12 }, (_, i) => 12 + i);
+  const DAYS = [0, 1, 2, 3, 4].map(n => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return d; });
+  // shortcut: availability is invented from a hash of date and hour, replace free() with the booking service's answer when one exists
+  const free = (d, h) => {
+    if (iso(d) === iso(new Date()) && h <= new Date().getHours()) return false;
+    let x = 7; for (const c of iso(d) + h) x = (x * 31 + c.charCodeAt(0)) % 997;
+    return x % 10 < 6;
+  };
+  const best = (d, first) => [first, 20, 21, 19, ...HOURS].find(h => h != null && free(d, h));
+  const daysEl = $('#days'), slotsEl = $('#slots'), note = $('#boardNote');
+  let day = DAYS.find(d => best(d) != null) || DAYS[0], hour = best(day);
+  const label = () => `${fmt(day, { weekday: 'long', day: 'numeric', month: 'long' })} at ${pad(hour)}:00`;
+  const button = (cls, html) => { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.innerHTML = html; return b; };
 
-  const quick = $('#quick'), book = $('#book'), booked = $('#booked'), err = $('#bookError');
-  quick.addEventListener('submit', e => {
-    e.preventDefault();
-    ['date', 'time', 'guests'].forEach(n => { if (quick.elements[n].value) book.elements[n].value = quick.elements[n].value; });
-    $('#reserve').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
-    book.elements.name.focus({ preventScroll: true });
-  });
+  function paint() {
+    $$('.day', daysEl).forEach((b, i) => b.setAttribute('aria-pressed', DAYS[i] === day));
+    $$('.slot', slotsEl).forEach((b, i) => b.setAttribute('aria-pressed', HOURS[i] === hour));
+    note.textContent = hour == null ? 'That day is fully booked. Pick another day.' : `Your table: ${label()}.`;
+  }
+  function slots() {
+    slotsEl.replaceChildren(...HOURS.map((h, i) => {
+      const b = button('slot', `${pad(h)}:00`);
+      b.style.setProperty('--i', i);
+      if (!free(day, h)) { b.disabled = true; b.setAttribute('aria-label', `${pad(h)}:00, fully booked`); }
+      b.addEventListener('click', () => { hour = h; paint(); });
+      return b;
+    }));
+    paint();
+  }
+  daysEl.append(...DAYS.map((d, i) => {
+    const b = button('day', `<small>${i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : fmt(d, { weekday: 'short' })}</small><b>${d.getDate()}</b>`);
+    b.setAttribute('aria-label', fmt(d, { weekday: 'long', day: 'numeric', month: 'long' }));
+    b.addEventListener('click', () => { if (d !== day) { day = d; hour = best(d, hour); slots(); } });
+    return b;
+  }));
+  slots();
+  $('#heroNote').textContent = hour == null ? '' : `Next table: ${label()}`;
+
+  const sheet = $('#sheet'), book = $('#book'), booked = $('#booked'), err = $('#bookError'), go = $('#go');
+  const flash = $('.sheet-flash', sheet), inner = $('.sheet-in', sheet);
+  $('#guestRow').innerHTML = [1, 2, 3, 4, 5, 6, 7, 8].map(g => `<label><input type="radio" name="guests" value="${g}"${g === 2 ? ' checked' : ''}><span>${g}</span></label>`).join('');
+  // sample names shown greyed in the empty name field; real guests' names must never be shown here
+  const NAMES = ['Noa Cohen', 'Yossi Levi', 'Maya Friedman', 'Daniel Mizrahi', 'Tamar Katz', 'Omer Peretz'];
+  let origin = null, nameTimer = 0, closing = false;
+
+  // the sheet starts as the button (same box, same red) and grows into place; closing plays it backwards
+  function morph(back) {
+    if (reduced || !origin) return Promise.resolve();
+    const a = origin.getBoundingClientRect(), b = sheet.getBoundingClientRect();
+    const o = { duration: back ? 320 : 480, easing: 'cubic-bezier(.32,.72,0,1)', direction: back ? 'reverse' : 'normal', fill: 'both' };
+    const runs = [
+      sheet.animate([{ transform: `translate(${a.left - b.left}px,${a.top - b.top}px) scale(${a.width / b.width},${a.height / b.height})` }, { transform: 'none' }], o),
+      flash.animate([{ opacity: 1 }, { opacity: 1, offset: 0.2 }, { opacity: 0 }], o),
+      inner.animate([{ opacity: 0 }, { opacity: 0, offset: 0.4 }, { opacity: 1 }], o),
+    ];
+    return Promise.all(runs.map(r => r.finished)).then(() => runs.forEach(r => r.cancel()));
+  }
+  function openSheet(btn) {
+    if (hour == null) { paint(); $('#reserve').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); return; }
+    origin = btn;
+    $('#sheetWhen').textContent = label();
+    book.hidden = false; booked.hidden = true; err.hidden = true;
+    sheet.classList.remove('closing');
+    sheet.showModal();
+    origin.style.visibility = 'hidden';
+    morph(false);
+    let n = 0; const name = book.elements.name;
+    name.placeholder = NAMES[0];
+    nameTimer = setInterval(() => { name.placeholder = NAMES[++n % NAMES.length]; }, 1800);
+  }
+  function closeSheet() {
+    if (closing) return Promise.resolve();
+    closing = true; sheet.classList.add('closing');
+    return morph(true).then(() => sheet.close());
+  }
+  sheet.addEventListener('close', () => { closing = false; clearInterval(nameTimer); if (origin) origin.style.visibility = ''; });
+  sheet.addEventListener('cancel', e => { e.preventDefault(); closeSheet(); });
+  sheet.addEventListener('click', e => { if (e.target === sheet || e.target.closest('[data-close]')) closeSheet(); });
+  $$('[data-open-book]').forEach(b => b.addEventListener('click', () => openSheet(b)));
+  $('#sheetChange').addEventListener('click', () => closeSheet().then(() => $('#reserve').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })));
 
   function problem(f) {
-    if (!f.date.value || f.date.value < iso(new Date())) return [f.date, 'Pick a date from today onwards.'];
     if (f.name.value.trim().length < 2) return [f.name, 'Tell us the name for the booking.'];
-    if (f.phone.value.replace(/\D/g, '').length < 9) return [f.phone, 'Enter a mobile number we can text, at least 9 digits.'];
+    if (f.phone.value.replace(/\D/g, '').length < 9) return [f.phone, 'Enter a phone number we can text, at least 9 digits.'];
     return null;
   }
+  book.addEventListener('input', e => {
+    e.target.removeAttribute('aria-invalid'); err.hidden = true;
+    go.classList.toggle('ready', !problem(book.elements)); // the button lights up once nothing is missing
+  });
   book.addEventListener('submit', e => {
     e.preventDefault();
     const f = book.elements, bad = problem(f);
-    $$('[aria-invalid]', book).forEach(el => el.removeAttribute('aria-invalid'));
     if (bad) { bad[0].setAttribute('aria-invalid', 'true'); err.textContent = bad[1]; err.hidden = false; bad[0].focus(); return; }
-    err.hidden = true;
-    const [y, m, d] = f.date.value.split('-').map(Number);
-    const when = new Date(y, m - 1, d).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
     const g = +f.guests.value;
-    $('#bookedTitle').textContent = `See you ${when}, ${f.name.value.trim().split(/\s+/)[0]}.`;
-    $('#bookedText').textContent = `Table for ${g === 1 ? 'one' : g} at ${f.time.value}. We will text ${f.phone.value.trim()} to confirm. The grill will be hot.`;
+    $('#bookedTitle').textContent = `See you soon, ${f.name.value.trim().split(/\s+/)[0]}.`;
+    $('#bookedText').textContent = `Table for ${g === 1 ? 'one' : g}, ${label()}. We will text ${f.phone.value.trim()} to confirm. The grill will be hot.`;
     book.hidden = true; booked.hidden = false; booked.focus();
   });
-  $('#bookAgain').addEventListener('click', () => { booked.hidden = true; book.hidden = false; book.elements.date.focus(); });
-  book.addEventListener('input', e => { e.target.removeAttribute('aria-invalid'); err.hidden = true; });
 
-  // self-check: the form validator rejects the three ways a booking can be wrong
-  console.assert(problem({ date: { value: '' }, name: { value: 'Dana' }, phone: { value: '0541234567' } })[1].startsWith('Pick'), 'date check');
-  console.assert(problem({ date: { value: '2999-01-01' }, name: { value: ' ' }, phone: { value: '0541234567' } })[1].startsWith('Tell'), 'name check');
-  console.assert(problem({ date: { value: '2999-01-01' }, name: { value: 'Dana' }, phone: { value: '12-34' } })[1].startsWith('Enter'), 'phone check');
-  console.assert(problem({ date: { value: '2999-01-01' }, name: { value: 'Dana' }, phone: { value: '054-123-4567' } }) === null, 'valid booking');
+  // self-check: the validator rejects a missing name and a short number, and passes a real booking
+  console.assert(problem({ name: { value: ' ' }, phone: { value: '0541234567' } })[1].startsWith('Tell'), 'name check');
+  console.assert(problem({ name: { value: 'Dana' }, phone: { value: '12-34' } })[1].startsWith('Enter'), 'phone check');
+  console.assert(problem({ name: { value: 'Dana' }, phone: { value: '054-123-4567' } }) === null, 'valid booking');
+  console.assert(DAYS.length === 5 && !free(DAYS[0], new Date().getHours()), 'no slots in the past');
 })();
