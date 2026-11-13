@@ -1,0 +1,6 @@
+# originals live outside the repo; the site ships the optimised copies in assets/
+/*.jpg
+.shots/
+.playwright-mcp/
+.impeccable/
+__pycache__/

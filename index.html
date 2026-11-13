@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0807">
+<meta name="color-scheme" content="dark">
+<title>Remetz — Steak &amp; Burgers Over Live Fire · Dizengoff Center, Tel Aviv</title>
+<meta name="description" content="Remetz is a live-fire steak and burger house in Dizengoff Center, Tel Aviv. Dry-aged beef, hand-ground burgers, oak and olive-wood coals. Reserve a table.">
+<meta property="og:title" content="Remetz — Steak & Burgers Over Live Fire">
+<meta property="og:description" content="Dry-aged steak and hand-ground burgers cooked over oak and olive-wood coals. Dizengoff Center, Tel Aviv.">
+<meta property="og:image" content="assets/img/grill-fire.webp">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=Frank+Ruhl+Libre:wght@700&family=Rozha+One&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/burger/bun-top.webp">
+<link rel="preload" as="image" href="assets/burger/base.webp">
+<link rel="stylesheet" href="css/styles.css?v=4">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="flame" viewBox="0 0 48 64">
+    <path fill-rule="evenodd" d="M25 1c3 13 18 20 18 39 0 13-8 23-19 23S5 53 5 40c0-10 6-14 8-23 4 5 6 8 7 13 4-8 6-18 5-29Zm-1 34c-2 6-8 9-8 15 0 5 3.500 8 8 8s8-3 8-8c0-7-5-9-8-15Z"/>
+  </symbol>
+</svg>
+
+<a class="skip" href="#menu">Skip to menu</a>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top" aria-label="Remetz, back to top">
+    <svg class="logo-mark" aria-hidden="true"><use href="#flame"/></svg>
+    <span class="logo-word">Remetz</span>
+  </a>
+  <nav class="nav-links" aria-label="Sections">
+    <a href="#fire">The fire</a>
+    <a href="#menu">Menu</a>
+    <a href="#room">The room</a>
+    <a href="#visit">Visit</a>
+  </nav>
+  <a class="btn btn-sm" href="#reserve">Reserve</a>
+</header>
+
+<main id="top">
+
+  <!-- Hero: exploded burger assembles onto a plate as you scroll -->
+  <section class="hero" id="hero" aria-label="Remetz">
+    <div class="stage" id="stage">
+      <canvas class="fire" id="fire" aria-hidden="true"></canvas>
+
+      <h1 class="title" aria-label="Remetz"><span aria-hidden="true">Rem</span><span aria-hidden="true">etz</span></h1>
+
+      <div class="burger" id="burger" aria-hidden="true">
+        <svg class="plate" viewBox="0 0 600 130" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="plRim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f3e9d8"/><stop offset=".55" stop-color="#cdbfa9"/><stop offset="1" stop-color="#7d6f60"/>
+            </linearGradient>
+            <radialGradient id="plWell" cx=".5" cy=".35" r=".7">
+              <stop offset="0" stop-color="#b8a992"/><stop offset=".7" stop-color="#d9ccb7"/><stop offset="1" stop-color="#efe5d3"/>
+            </radialGradient>
+            <radialGradient id="plShadow" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#000" stop-opacity=".85"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="300" cy="96" rx="298" ry="32" fill="url(#plShadow)"/>
+          <ellipse cx="300" cy="70" rx="250" ry="30" fill="#5b4f44"/>
+          <ellipse cx="300" cy="58" rx="290" ry="40" fill="url(#plRim)"/>
+          <ellipse cx="300" cy="55" rx="212" ry="25" fill="url(#plWell)"/>
+          <ellipse cx="300" cy="58" rx="289" ry="39" fill="none" stroke="#fff8ea" stroke-opacity=".55" stroke-width="1.500"/>
+        </svg>
+        <div class="stack" id="stack">
+          <img class="layer l-base"   src="assets/burger/base.webp"    alt="" width="822" height="586">
+          <img class="layer l-tomato" src="assets/burger/tomato.webp"  alt="" width="790" height="260" data-drop="0.0582">
+          <img class="layer l-patty"  src="assets/burger/patty.webp"   alt="" width="691" height="245" data-drop="0.0836">
+          <img class="layer l-cheese" src="assets/burger/cheese.webp"  alt="" width="822" height="370" data-drop="0.1527">
+          <img class="layer l-bacon"  src="assets/burger/bacon.webp"   alt="" width="773" height="254" data-drop="0.2300">
+          <img class="layer l-veg"    src="assets/burger/veg.webp"     alt="" width="852" height="202" data-drop="0.3027">
+          <img class="layer l-bun"    src="assets/burger/bun-top.webp" alt="" width="636" height="288" data-drop="0.3745">
+        </div>
+      </div>
+
+      <div class="intro">
+        <p class="intro-line">Steak and burgers, cooked over live&nbsp;fire.<br>Dizengoff Center, Tel&nbsp;Aviv.</p>
+        <p class="intro-cue"><span>Scroll to build it</span>
+          <svg viewBox="0 0 12 28" aria-hidden="true"><path d="M6 0v25M1 20l5 6 5-6" fill="none" stroke="currentColor" stroke-width="1.500"/></svg>
+        </p>
+      </div>
+
+      <div class="landing" id="landing">
+        <h2>Served. Now come and&nbsp;eat&nbsp;it.</h2>
+        <p>The Remetz burger, 220&nbsp;g of chuck and brisket off the coals. It does not travel well. You&nbsp;should.</p>
+        <form class="quick" id="quick" novalidate>
+          <label><span>Date</span><input type="date" name="date" required></label>
+          <label><span>Time</span><select name="time" data-times></select></label>
+          <label><span>Guests</span><select name="guests" data-guests></select></label>
+          <button class="btn" type="submit">Find a table</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- The fire -->
+  <section class="fire-sec" id="fire">
+    <img class="fire-photo" src="assets/img/grill-fire.webp" alt="Burger patties searing over open flames on an iron grill" width="2000" height="1389" loading="lazy">
+    <div class="fire-copy wrap">
+      <h2>Nothing here touches a&nbsp;flat-top.</h2>
+      <p>Every steak and every patty goes over oak and olive-wood coals, somewhere north of 400&nbsp;°C. <em>Remetz</em> <span class="he" lang="he" dir="rtl">רֶמֶץ</span> is the Hebrew word for the embers still glowing after the flame dies down. That is where the flavour is, so that is where we&nbsp;cook.</p>
+      <ul class="facts">
+        <li>Beef dry-aged 45 days, on the bone</li>
+        <li>Chuck and brisket ground at 11:00, every day</li>
+        <li>Rested for as long as it was cooked</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <section class="menu wrap" id="menu">
+    <header class="sec-head">
+      <h2>The menu is short on&nbsp;purpose.</h2>
+      <p>One grill, one cook standing at it. Prices in shekels, service not included.</p>
+    </header>
+
+    <div class="course">
+      <figure class="course-photo" data-swap>
+        <img src="assets/img/steak-board.webp" alt="Sliced medium-rare ribeye on a wooden board" width="1600" height="900" loading="lazy" data-key="board" class="on">
+        <img src="assets/img/steak-rare.webp" alt="Rare steak, crust dark, centre pink" width="1200" height="2134" loading="lazy" data-key="rare">
+        <img src="assets/img/ribs.webp" alt="Glazed short rib on a board with tomato and pickles" width="1600" height="1068" loading="lazy" data-key="ribs">
+      </figure>
+      <div class="course-list">
+        <h3>Steak</h3>
+        <ul class="dishes">
+          <li data-img="board"><div><b>Ribeye, 400 g</b><span>Dry-aged 45 days, salt, coals. Nothing else.</span></div><i>218</i></li>
+          <li data-img="rare"><div><b>Sirloin, 300 g</b><span>Thick cut, black-pepper crust, brown butter.</span></div><i>148</i></li>
+          <li data-img="board"><div><b>Entrecôte on the bone, 600 g</b><span>For one very serious person.</span></div><i>289</i></li>
+          <li data-img="rare"><div><b>Picanha</b><span>Fat cap rendered over the fire, chimichurri.</span></div><i>164</i></li>
+          <li data-img="ribs"><div><b>Short rib</b><span>Smoked eight hours, finished on the grill, date glaze.</span></div><i>176</i></li>
+          <li data-img="board"><div><b>Tomahawk for two, 1.1 kg</b><span>Carved at the table. Order it when you book.</span></div><i>520</i></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="course flip">
+      <figure class="course-photo" data-swap>
+        <img src="assets/img/smash.webp" alt="Double smash burger with melted cheddar and pickles" width="1200" height="1800" loading="lazy" data-key="smash" class="on">
+        <img src="assets/img/burger-close.webp" alt="Close-up of a burger with melted cheese, tomato and lettuce" width="1200" height="1600" loading="lazy" data-key="close">
+      </figure>
+      <div class="course-list">
+        <h3>Burgers</h3>
+        <ul class="dishes">
+          <li data-img="close"><div><b>The Remetz</b><span>220 g chuck and brisket, aged cheddar, smoked bacon, tomato, pickled red onion.</span></div><i>78</i></li>
+          <li data-img="smash"><div><b>Double smash</b><span>Two thin patties, crisp edges, double cheddar, house pickles.</span></div><i>84</i></li>
+          <li data-img="close"><div><b>Black garlic</b><span>Black-garlic aioli, charred onion, gruyère.</span></div><i>82</i></li>
+          <li data-img="smash"><div><b>Bone marrow</b><span>Roasted marrow melted over the patty, parsley, capers.</span></div><i>96</i></li>
+          <li data-img="close"><div><b>King oyster</b><span>Grilled mushroom steak, smoked labneh, zhug. No beef.</span></div><i>68</i></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="course">
+      <figure class="course-photo" data-swap>
+        <img src="assets/img/steak-frites.webp" alt="Skirt steak with hand-cut fries and herbs" width="1600" height="1067" loading="lazy" data-key="frites" class="on">
+        <img src="assets/img/table.webp" alt="A table set with a burger, fries and shared plates" width="1200" height="1837" loading="lazy" data-key="table">
+      </figure>
+      <div class="course-list">
+        <h3>On the side</h3>
+        <ul class="dishes">
+          <li data-img="frites"><div><b>Fries in beef fat</b><span>Hand-cut, twice fried, parsley.</span></div><i>28</i></li>
+          <li data-img="table"><div><b>Charred cabbage</b><span>Tahini, lemon, burnt butter.</span></div><i>34</i></li>
+          <li data-img="table"><div><b>Roasted bone marrow</b><span>Sourdough from the grill, sea salt.</span></div><i>46</i></li>
+          <li data-img="frites"><div><b>Creamed spinach</b><span>Nutmeg, far too much cream.</span></div><i>32</i></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Room -->
+  <section class="room wrap" id="room">
+    <div class="room-copy">
+      <h2>A room built around the&nbsp;grill.</h2>
+      <p>Sixty seats, twelve of them at the counter facing the fire. Dark wood, low light, and the sound of fat hitting coals. Come for a burger at the bar or settle in for the tomahawk.</p>
+      <dl class="hours">
+        <div><dt>Sunday to Thursday</dt><dd>12:00 – 00:00</dd></div>
+        <div><dt>Friday</dt><dd>12:00 – 01:00</dd></div>
+        <div><dt>Saturday</dt><dd>13:00 – 01:00</dd></div>
+      </dl>
+    </div>
+    <img class="room-a" src="assets/img/interior.webp" alt="Dim dining room with white tablecloths and wall lamps" width="1300" height="1950" loading="lazy">
+    <img class="room-b" src="assets/img/flame.webp" alt="A cook behind a tall flame rising from the grill" width="1300" height="1949" loading="lazy">
+    <img class="room-c" src="assets/img/bar.webp" alt="The bar, with chalkboard menus and pendant lamps" width="1800" height="1350" loading="lazy">
+  </section>
+
+  <!-- Reserve -->
+  <section class="reserve" id="reserve">
+    <div class="wrap reserve-grid">
+      <div class="reserve-copy">
+        <h2>Come hungry.</h2>
+        <p>Tables are held for fifteen minutes. Parties of nine or more, or the tomahawk for the whole table: call us on <a href="tel:+97235550142">03-555-0142</a>.</p>
+      </div>
+      <form class="book" id="book" novalidate>
+        <div class="row3">
+          <label><span>Date</span><input type="date" name="date" required></label>
+          <label><span>Time</span><select name="time" data-times></select></label>
+          <label><span>Guests</span><select name="guests" data-guests></select></label>
+        </div>
+        <label><span>Name</span><input type="text" name="name" autocomplete="name" required enterkeyhint="next"></label>
+        <label><span>Mobile</span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="05X-XXX-XXXX" enterkeyhint="next"></label>
+        <label><span>Anything we should know <small>(optional)</small></span><textarea name="notes" rows="2" enterkeyhint="done"></textarea></label>
+        <p class="form-error" id="bookError" role="alert" hidden></p>
+        <button class="btn btn-lg" type="submit">Reserve the table</button>
+      </form>
+      <div class="booked" id="booked" tabindex="-1" hidden>
+        <svg aria-hidden="true"><use href="#flame"/></svg>
+        <h3 id="bookedTitle"></h3>
+        <p id="bookedText"></p>
+        <button class="link" type="button" id="bookAgain">Change the booking</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visit -->
+  <section class="visit wrap" id="visit">
+    <div class="visit-copy">
+      <h2>Find the&nbsp;smoke.</h2>
+      <address>
+        Remetz<br>
+        Dizengoff Center, Dizengoff St 50<br>
+        Tel Aviv-Yafo
+      </address>
+      <p>Street level, on the King George side. Follow the smell. Parking in the Center, levels −2 and −3.</p>
+      <p class="visit-links">
+        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=Dizengoff+Center+Tel+Aviv" target="_blank" rel="noopener">Get directions</a>
+        <a class="link" href="tel:+97235550142">03-555-0142</a>
+      </p>
+    </div>
+    <div class="map">
+      <iframe title="Map showing Remetz at Dizengoff Center, Tel Aviv" loading="lazy" referrerpolicy="no-referrer"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=34.7690%2C32.0722%2C34.7814%2C32.0786&amp;layer=mapnik&amp;marker=32.0754%2C34.7752"></iframe>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <a class="logo logo-xl" href="#top" aria-label="Remetz, back to top">
+      <svg class="logo-mark" aria-hidden="true"><use href="#flame"/></svg>
+      <span class="logo-word">Remetz</span>
+    </a>
+    <nav aria-label="Footer">
+      <a href="#fire">The fire</a><a href="#menu">Menu</a><a href="#room">The room</a><a href="#reserve">Reserve</a><a href="#visit">Visit</a>
+    </nav>
+    <p class="fine">Photography from Unsplash: Pablo Merchán Montes, Joshua Kantarges, Eiliv Aceron, Engin Akyurt, Jenn Kosar, Adrien Olichon, Patrick Tomasso, Shio Yang and others. Map © OpenStreetMap contributors.</p>
+  </div>
+</footer>
+
+<script src="js/main.js?v=4" defer></script>
+</body>
+</html>
