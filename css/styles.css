@@ -101,11 +101,11 @@ p a { text-decoration-color: var(--red); text-underline-offset: .2em; text-decor
 @media (max-width: 760px) { .nav-links { display: none; } }
 
 /* ---------- hero ---------- */
-.hero { height: 360vh; height: 360svh; position: relative; }
+.hero { height: 400vh; height: 400svh; position: relative; }
 .stage {
   --q: 0; --pm: 0; --title: 1; --plate: 0; --panel: 0; --intro: 1;
-  --bh: min(80svh, 96vw);
-  --y0: 3svh; --land-x: -21vw; --land-y: -12svh; --land-s: 1.9;
+  --bh: min(94svh, 118vw);
+  --y0: 2svh; --land-x: -21vw; --land-y: 3svh; --land-s: 1.12;
   position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
   background:
     radial-gradient(90% 55% at 50% 108%, rgb(196 44 10 / .5) 0, rgb(94 28 10 / .38) 34%, transparent 70%),
@@ -124,42 +124,20 @@ p a { text-decoration-color: var(--red); text-underline-offset: .2em; text-decor
   pointer-events: none; user-select: none; -webkit-user-select: none;
 }
 
-.burger {
+.burger, .stage::before {
   position: absolute; left: 50%; top: 50%; z-index: 2;
-  height: var(--bh); aspect-ratio: 444 / 1100;
-  transform-origin: 50% 100%;
+  height: var(--bh); aspect-ratio: 3 / 4;
+  transform-origin: 50% 70%;
   transform:
     translate(calc(-50% + var(--land-x) * var(--pm)), calc(-50% + var(--y0) + (var(--land-y) - var(--y0)) * var(--pm)))
     scale(calc(1 + (var(--land-s) - 1) * var(--pm)));
   will-change: transform;
 }
-.stack { position: absolute; inset: 0; transform-origin: 50% 100%; }
-.layer {
-  position: absolute; height: auto; max-width: none;
-  transform: translate(calc(var(--mx, 0) * var(--dp, 0) * (1 - var(--t, 0)) * 1px), calc(var(--t, 0) * var(--drop, 0) * var(--bh) + var(--my, 0) * var(--dp, 0) * (1 - var(--t, 0)) * .5px));
-  /* each layer shadows the one under it: soft and far while it floats, tight and dark once it lands */
-  filter: drop-shadow(0 calc(var(--bh) * (.011 + .02 * (1 - var(--t, 0)))) calc(var(--bh) * (.007 + .022 * (1 - var(--t, 0)))) rgb(0 0 0 / .62));
-  animation: bob var(--bob-d, 5s) ease-in-out var(--bob-o, 0s) infinite;
-  will-change: transform;
-}
-@keyframes bob { 50% { translate: 0 calc(var(--bob-a, 6px) * (1 - var(--t, 0))); } }
-/* positions measured from the photograph, as a share of the exploded stack */
-.l-bun    { left: 20.05%; top: 0;      width: 71.62%; --bob-a: -9px; --bob-d: 5.2s; }
-.l-veg    { left: 2.48%;  top: 16.73%; width: 95.95%; --bob-a: 7px;  --bob-d: 4.6s; --bob-o: -1.1s; }
-.l-bacon  { left: 9.91%;  top: 27.64%; width: 87.05%; --bob-a: -6px; --bob-d: 5.6s; --bob-o: -2.3s; }
-.l-cheese { left: 4.39%;  top: 38.55%; width: 92.57%; --bob-a: 6px;  --bob-d: 4.9s; --bob-o: -.6s; }
-.l-patty  { left: 12.05%; top: 52.73%; width: 77.82%; --bob-a: -5px; --bob-d: 5.4s; --bob-o: -3s; }
-.l-tomato { left: 0;      top: 62.55%; width: 88.96%; --bob-a: 5px;  --bob-d: 4.4s; --bob-o: -1.8s; }
-.l-lettuce{ left: 7.43%;  top: 73.36%; width: 92.57%; --bob-a: -4px; --bob-d: 6s;   --bob-o: -2.6s; }
-.l-base   { left: 10.36%; top: 90.77%; width: 79.73%; --bob-a: 3px;  --bob-d: 5s;   --bob-o: -.4s; }
-
-.plate {
-  position: absolute; left: 50%; bottom: -3.4%; width: 140%; height: auto; aspect-ratio: 600 / 130;
-  opacity: var(--plate);
-  transform: translate(-50%, calc((1 - var(--plate)) * 4svh));
-}
-.stage.landed .stack { animation: thud 520ms var(--ease-out); }
-@keyframes thud { 0% { transform: scaleY(1); } 22% { transform: scale(1.03, .955); } 100% { transform: none; } }
+.burger { animation: bob 5.6s ease-in-out infinite; }
+@keyframes bob { 50% { translate: 0 calc(-9px * (1 - var(--q))); } }
+/* ember glow that travels with the burger, so the backlight in the render has a source on the page */
+.stage::before { content: ""; z-index: 0; pointer-events: none;
+  background: radial-gradient(46% 40% at 50% 62%, rgb(255 96 30 / .34) 0, rgb(216 31 14 / .14) 45%, transparent 72%); }
 
 .intro {
   position: absolute; z-index: 3; left: var(--gutter); right: var(--gutter);
@@ -208,10 +186,13 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(
 .form-error { color: #ff8a78; font-weight: 500; }
 
 /* ---------- the fire ---------- */
-.fire-sec { position: relative; min-height: 115svh; display: flex; align-items: flex-end; isolation: isolate; }
+/* the photo starts 40svh up inside the hero and fades in through a mask, so the canvas flames become the grill's flames */
+.fire-sec { position: relative; z-index: 5; margin-top: -40svh; min-height: 150svh; display: flex; align-items: flex-end; isolation: isolate; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / .55) 18svh, #000 36svh); mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / .55) 18svh, #000 36svh); }
+.fire-copy { pointer-events: auto; }
 .fire-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
 .fire-sec::before { content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(to bottom, var(--black) 0, rgb(11 8 7 / .1) 26%, rgb(11 8 7 / .55) 58%, var(--black) 100%); }
+  background: linear-gradient(to bottom, rgb(11 8 7 / .1) 0, rgb(11 8 7 / .1) 30%, rgb(11 8 7 / .55) 60%, var(--black) 100%); }
 .fire-copy { padding-block: 34svh clamp(72px, 12svh, 140px); }
 .fire-copy h2 { max-width: 13ch; }
 .fire-copy p { margin-top: 1.6rem; max-width: 58ch; font-size: clamp(1.0625rem, 1.35vw, 1.25rem); color: #e9dccb; text-shadow: 0 1px 12px rgb(0 0 0 / .7); }
@@ -304,10 +285,23 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(
 .slot[aria-pressed="true"] { background: var(--red-deep); border-color: var(--red); color: #fff6ec; box-shadow: 0 0 0 3px rgb(255 58 34 / .22), 0 10px 26px -8px rgb(255 58 34 / .8); }
 .day:active, .slot:active:not(:disabled) { transform: scale(.95); }
 .board-note { color: #e3d3c0; font-size: .9375rem; min-height: 1.5em; }
-.btn-hook { position: relative; overflow: hidden; border-radius: 14px; min-height: 60px; box-shadow: 0 12px 34px -10px rgb(255 58 34 / .75); }
-.btn-hook::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 38%, rgb(255 220 190 / .34) 50%, transparent 62%); transform: translateX(-110%); animation: sheen 4.5s var(--ease-out) 1.2s infinite; pointer-events: none; }
-@keyframes sheen { 0%, 62% { transform: translateX(-110%); } 100% { transform: translateX(110%); } }
-.btn-hook:active { transform: scale(.955); }
+/* adapted from Uiverse.io by barisdogansutcu: white pill that spreads its letters and floods red; purple swapped for the site red */
+.btn-hook {
+  min-height: 0; padding: 17px 40px; border-radius: 50px; border: 0;
+  background-color: #fff; color: var(--black);
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  font-size: 15px; font-stretch: 100%; letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap;
+  transition: all .5s ease;
+}
+.btn-hook:active {
+  letter-spacing: 3px; background-color: var(--red-deep); color: #fff;
+  box-shadow: var(--red) 0 0 0 0; transform: translateY(10px); transition: 100ms;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-hook:hover { letter-spacing: 3px; background-color: var(--red-deep); color: #fff; box-shadow: var(--red) 0 7px 29px 0; }
+  .btn-hook:hover:active { box-shadow: var(--red) 0 0 0 0; }
+}
+@media (max-width: 480px) { .btn-hook { padding: 17px 18px; font-size: 13px; letter-spacing: 1px; } .btn-hook:active { letter-spacing: 1.6px; } }
 @media (hover: hover) and (pointer: fine) {
   .day:hover:not([aria-pressed="true"]), .slot:hover:not(:disabled):not([aria-pressed="true"]) { background: rgb(242 231 214 / .16); border-color: rgb(242 231 214 / .34); }
 }
@@ -397,9 +391,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(
 
 /* ---------- small screens: hero ---------- */
 @media (max-width: 760px) {
-  .stage { --bh: min(70svh, 172vw); --y0: 1svh; --land-x: 0px; --land-y: -27svh; --land-s: 1.7; }
+  .stage { --bh: min(76svh, 128vw); --y0: 1svh; --land-x: 0px; --land-y: -13svh; --land-s: 1.1; }
   .title { flex-direction: column; font-size: min(41vw, 30svh); line-height: .8; transform: translateY(-3svh) scale(calc(1 + .1 * var(--q))); }
-  .plate { width: 118%; }
   .intro-line { font-size: .875rem; max-width: 19ch; }
   .intro-cue span { display: none; }
   .landing { left: var(--gutter); right: var(--gutter); top: auto; width: auto;
@@ -415,7 +408,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .layer, .intro-cue svg, .stage.landed .stack, .booked, .booked svg, .slot, .btn-hook::after, .btn-go.ready { animation: none; }
+  .burger, .intro-cue svg, .booked, .booked svg, .slot, .btn-go.ready { animation: none; }
   .js .rv, .js .course .dishes li { opacity: 1; transform: none; transition: none; }
   .js .course .course-photo { clip-path: none; transition: none; }
   .js .fire-copy h2, .js .fire-copy p, .js .facts { opacity: 1; transform: none; transition: none; }

@@ -65,8 +65,18 @@
 
   /* ---------- hero: scroll scrubs the burger from exploded to plated ---------- */
   const hero = $('#hero'), stage = $('#stage'), burger = $('#burger'), nav = $('#nav');
-  const layers = $$('.layer[data-drop]'); // DOM order = bottom to top, so the lowest lands first
-  layers.forEach(l => l.style.setProperty('--drop', l.dataset.drop));
+  // the drop is a rendered frame sequence (tools/burger_3d.py); scroll picks the frame
+  const N = 48, frames = [], cx = burger.getContext('2d');
+  let want = 0, shown = null;
+  const draw = () => {   // nearest frame that has finished loading, so a slow network never shows a blank
+    for (let d = 0; d < N; d++) {
+      const f = [frames[want - d], frames[want + d]].find(im => im && im.complete && im.naturalWidth);
+      if (!f) continue;
+      if (f !== shown) { cx.clearRect(0, 0, burger.width, burger.height); cx.drawImage(f, 0, 0); shown = f; }
+      return;
+    }
+  };
+  for (let i = 0; i < N; i++) { const im = new Image(); im.onload = draw; im.src = `assets/burger3d/f${String(i + 1).padStart(3, '0')}.webp`; frames.push(im); }
   const fire = makeFire($('#fire'));
   let landed = false, queued = false;
 
@@ -74,21 +84,20 @@
     queued = false;
     const range = hero.offsetHeight - innerHeight;
     const p = clamp(-hero.getBoundingClientRect().top / range);
-    const q = clamp(p / 0.8); // the last fifth of the scroll is a hold with the form on screen
-    layers.forEach((l, i) => { const x = clamp((q - i * 0.05) / 0.5); l.style.setProperty('--t', (x * x).toFixed(4)); });
+    const q = clamp(p / 0.72); // the rest of the scroll is a hold with the button on screen
+    want = Math.round(q * (N - 1)); draw();
     const s = stage.style, panel = smooth(q, 0.82, 1);
     s.setProperty('--q', q.toFixed(4));
     s.setProperty('--pm', smooth(q, 0.3, 0.92).toFixed(4));
     s.setProperty('--title', (1 - smooth(q, 0.08, 0.66)).toFixed(4));
-    s.setProperty('--plate', smooth(q, 0.42, 0.78).toFixed(4));
     s.setProperty('--panel', panel.toFixed(4));
     s.setProperty('--intro', (1 - smooth(q, 0, 0.14)).toFixed(4));
     stage.classList.toggle('panel-on', panel > 0.02);
     fire.level = 0.32 + 0.5 * q;
-    const now = q >= 0.8;
+    const now = q >= 0.73; // frame 35, where the top bun hits
     if (now !== landed) {
       landed = now; stage.classList.toggle('landed', now);
-      if (now) { const b = burger.getBoundingClientRect(), st = stage.getBoundingClientRect(); fire.burst(b.left + b.width / 2 - st.left, b.bottom - st.top); }
+      if (now) { const b = burger.getBoundingClientRect(), st = stage.getBoundingClientRect(); fire.burst(b.left + b.width / 2 - st.left, b.top + b.height * 0.8 - st.top); }
     }
     nav.classList.toggle('solid', p >= 1);
   }
@@ -104,18 +113,6 @@
   const seen = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('seen'); seen.unobserve(e.target); } }), { threshold: 0.15 });
   $$('.fire-sec, .room, .rv, .course').forEach(el => seen.observe(el));
   $$('.dishes').forEach(ul => $$('li', ul).forEach((li, i) => li.style.setProperty('--i', i)));
-
-  /* ---------- floating layers lean toward the mouse, less as they land ---------- */
-  if (!reduced && matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    layers.forEach((l, i) => l.style.setProperty('--dp', (i - 3) * 7));
-    let mx = 0, my = 0, tx = 0, ty = 0, drift = 0;
-    const ease = () => {
-      mx += (tx - mx) * 0.08; my += (ty - my) * 0.08;
-      stage.style.setProperty('--mx', mx.toFixed(3)); stage.style.setProperty('--my', my.toFixed(3));
-      drift = Math.abs(tx - mx) + Math.abs(ty - my) > 0.002 ? requestAnimationFrame(ease) : 0;
-    };
-    stage.addEventListener('pointermove', e => { tx = e.clientX / innerWidth * 2 - 1; ty = e.clientY / innerHeight * 2 - 1; if (!drift) drift = requestAnimationFrame(ease); });
-  }
 
   /* ---------- menu: hovering or focusing a dish shows its photo ---------- */
   $$('.course').forEach(course => {

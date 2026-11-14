@@ -14,9 +14,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=Frank+Ruhl+Libre:wght@700&family=Rozha+One&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="assets/burger/bun-top.webp">
-<link rel="preload" as="image" href="assets/burger/bun-bottom.webp">
-<link rel="stylesheet" href="css/styles.css?v=6">
+<link rel="preload" as="image" href="assets/burger3d/f001.webp">
+<link rel="stylesheet" href="css/styles.css?v=8">
 </head>
 <body>
 
@@ -44,43 +43,14 @@
 
 <main id="top">
 
-  <!-- Hero: exploded burger assembles onto a plate as you scroll -->
+  <!-- Hero: a rendered 3D burger drops onto the plate, one frame per step of scroll -->
   <section class="hero" id="hero" aria-label="Remetz">
     <div class="stage" id="stage">
       <canvas class="fire" id="fire" aria-hidden="true"></canvas>
 
       <h1 class="title" aria-label="Remetz"><span aria-hidden="true">Rem</span><span aria-hidden="true">etz</span></h1>
 
-      <div class="burger" id="burger" aria-hidden="true">
-        <svg class="plate" viewBox="0 0 600 130" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="plRim" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#f3e9d8"/><stop offset=".55" stop-color="#cdbfa9"/><stop offset="1" stop-color="#7d6f60"/>
-            </linearGradient>
-            <radialGradient id="plWell" cx=".5" cy=".35" r=".7">
-              <stop offset="0" stop-color="#b8a992"/><stop offset=".7" stop-color="#d9ccb7"/><stop offset="1" stop-color="#efe5d3"/>
-            </radialGradient>
-            <radialGradient id="plShadow" cx=".5" cy=".5" r=".5">
-              <stop offset="0" stop-color="#000" stop-opacity=".85"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="300" cy="96" rx="298" ry="32" fill="url(#plShadow)"/>
-          <ellipse cx="300" cy="70" rx="250" ry="30" fill="#5b4f44"/>
-          <ellipse cx="300" cy="58" rx="290" ry="40" fill="url(#plRim)"/>
-          <ellipse cx="300" cy="55" rx="212" ry="25" fill="url(#plWell)"/>
-          <ellipse cx="300" cy="58" rx="289" ry="39" fill="none" stroke="#fff8ea" stroke-opacity=".55" stroke-width="1.500"/>
-        </svg>
-        <div class="stack" id="stack">
-          <img class="layer l-base"    src="assets/burger/bun-bottom.webp" alt="" width="708" height="203">
-          <img class="layer l-lettuce" src="assets/burger/lettuce.webp" alt="" width="822" height="402" data-drop="0.040">
-          <img class="layer l-tomato"  src="assets/burger/tomato.webp"  alt="" width="790" height="260" data-drop="0.146">
-          <img class="layer l-patty"   src="assets/burger/patty.webp"   alt="" width="691" height="245" data-drop="0.231">
-          <img class="layer l-cheese"  src="assets/burger/cheese.webp"  alt="" width="822" height="370" data-drop="0.355">
-          <img class="layer l-bacon"   src="assets/burger/bacon.webp"   alt="" width="773" height="254" data-drop="0.414">
-          <img class="layer l-veg"     src="assets/burger/veg.webp"     alt="" width="852" height="202" data-drop="0.491">
-          <img class="layer l-bun"     src="assets/burger/bun-top.webp" alt="" width="636" height="288" data-drop="0.614">
-        </div>
-      </div>
+      <canvas class="burger" id="burger" width="810" height="1080" aria-hidden="true"></canvas>
 
       <div class="intro">
         <p class="intro-line">Steak and burgers, cooked over live&nbsp;fire.<br>Dizengoff Center, Tel&nbsp;Aviv.</p>
@@ -265,6 +235,6 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=6" defer></script>
+<script src="js/main.js?v=8" defer></script>
 </body>
 </html>
