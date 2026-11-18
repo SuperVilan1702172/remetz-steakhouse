@@ -370,7 +370,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(
 .logo-xl { margin: 0; justify-self: start; gap: clamp(12px, 2vw, 26px); }
 .logo-xl .logo-mark { width: clamp(42px, 8vw, 104px); height: clamp(56px, 10.700vw, 139px); }
 .logo-xl .logo-word { font-size: clamp(3.6rem, 15vw, 13rem); letter-spacing: .01em; line-height: .8; }
-.foot nav { display: flex; flex-wrap: wrap; gap: 4px 30px; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 0 30px; }
+.foot nav a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
 .fine { color: #9a8877; font-size: .8125rem; max-width: 80ch; }
 
 /* ---------- reveal (only when JS is running; content is visible by default) ---------- */
